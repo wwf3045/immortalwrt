@@ -8,7 +8,7 @@ define Build/alfa-network-rootfs-header
 endef
 
 define Build/append-md5sum-bin
-	$(STAGING_DIR_HOST)/bin/mkhash md5 $@ | sed 's/../\\\\x&/g' |\
+	$(MKHASH) md5 $@ | sed 's/../\\\\x&/g' |\
 		xargs echo -ne >> $@
 endef
 
@@ -28,7 +28,7 @@ define Build/mkdapimg2
 	$(STAGING_DIR_HOST)/bin/mkdapimg2 \
 		-i $@ -o $@.new \
 		-s $(DAP_SIGNATURE) \
-		-v $(VERSION_DIST)-$(firstword $(subst +, ,$(firstword $(subst -, ,$(REVISION))))) \
+		-v Emortal-$(firstword $(subst +, ,$(firstword $(subst -, ,$(REVISION))))) \
 		-r Default \
 		$(if $(1),-k $(1))
 	mv $@.new $@
@@ -560,7 +560,7 @@ define Device/lan-turtle
   $(Device/tplink-16mlzma)
   DEVICE_TITLE := Hak5 LAN Turtle
   DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-storage \
-	-kmod-ath9k -swconfig -uboot-envtools -wpad-mini
+	-kmod-ath9k -swconfig -uboot-envtools -wpad-basic-openssl
   BOARDNAME := LAN-TURTLE
   DEVICE_PROFILE := LANTURTLE
   TPLINK_HWID := 0x5348334c
@@ -718,7 +718,7 @@ define Device/packet-squirrel
   $(Device/tplink-16mlzma)
   DEVICE_TITLE := Hak5 Packet Squirrel
   DEVICE_PACKAGES := kmod-usb-core kmod-usb2 \
-	-kmod-ath9k -swconfig -uboot-envtools -wpad-mini
+	-kmod-ath9k -swconfig -uboot-envtools -wpad-basic-openssl
   BOARDNAME := PACKET-SQUIRREL
   DEVICE_PROFILE := PACKETSQUIRREL
   TPLINK_HWID := 0x5351524c

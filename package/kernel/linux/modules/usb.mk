@@ -198,6 +198,23 @@ endef
 
 $(eval $(call KernelPackage,usb-gadget-eth))
 
+define KernelPackage/usb-gadget-ncm
+  TITLE:=USB Network Control Model (NCM) Gadget support
+  KCONFIG:=CONFIG_USB_G_NCM
+  DEPENDS:=+kmod-usb-gadget +kmod-usb-lib-composite \
+	+kmod-usb-gadget-eth
+  FILES:= \
+	$(LINUX_DIR)/drivers/usb/gadget/function/usb_f_ncm.ko \
+	$(LINUX_DIR)/drivers/usb/gadget/legacy/g_ncm.ko
+  AUTOLOAD:=$(call AutoLoad,52,usb_f_ncm)
+  $(call AddDepends/usb)
+endef
+
+define KernelPackage/usb-gadget-ncm/description
+  Kernel support for USB Network Control Model (NCM) Gadget
+endef
+
+$(eval $(call KernelPackage,usb-gadget-ncm))
 
 define KernelPackage/usb-gadget-serial
   TITLE:=USB Serial Gadget support
@@ -1142,7 +1159,7 @@ endef
 
 define KernelPackage/usb-net-aqc111
   TITLE:=Kernel module for Aquantia AQtion USB to 5/2.5GbE Controllers
-  DEPENDS:=+kmod-libphy
+  DEPENDS:=@!LINUX_4_9 +kmod-libphy
   KCONFIG:=CONFIG_USB_NET_AQC111
   FILES:=$(LINUX_DIR)/drivers/$(USBNET_DIR)/aqc111.ko
   AUTOLOAD:=$(call AutoProbe,aqc111)
@@ -1220,6 +1237,23 @@ define KernelPackage/usb-net-kaweth/description
 endef
 
 $(eval $(call KernelPackage,usb-net-kaweth))
+
+
+define KernelPackage/usb-net-lan78xx
+  TITLE:=USB-To-Ethernet Microchip LAN78XX convertors
+  DEPENDS:=+kmod-fixed-phy +kmod-phy-microchip +PACKAGE_kmod-of-mdio:kmod-of-mdio
+  KCONFIG:=CONFIG_USB_LAN78XX
+  FILES:=$(LINUX_DIR)/drivers/$(USBNET_DIR)/lan78xx.ko
+  AUTOLOAD:=$(call AutoProbe,lan78xx)
+  $(call AddDepends/usb-net)
+endef
+
+define KernelPackage/usb-net-lan78xx/description
+ Kernel module for Microchip LAN78XX based USB 2 & USB 3
+ 10/100/1000 Ethernet adapters.
+endef
+
+$(eval $(call KernelPackage,usb-net-lan78xx))
 
 
 define KernelPackage/usb-net-pegasus

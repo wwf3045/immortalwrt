@@ -180,12 +180,13 @@ define Build/gzip
 endef
 
 define Build/zip
+	rm -rf $@.tmp
 	mkdir $@.tmp
-	mv $@ $@.tmp/$(1)
+	mv $@ $@.tmp/$(word 1,$(1))
 
-	zip -j -X \
-		$(if $(SOURCE_DATE_EPOCH),--mtime="$(SOURCE_DATE_EPOCH)") \
-		$@ $@.tmp/$(if $(1),$(1),$@)
+	TZ=UTC $(STAGING_DIR_HOST)/bin/zip -j -X \
+		$(wordlist 2,$(words $(1)),$(1)) \
+		$@ $@.tmp/$(if $(word 1,$(1)),$(word 1,$(1)),$$(basename $@))
 	rm -rf $@.tmp
 endef
 
@@ -202,6 +203,14 @@ define Build/jffs2
 		$(STAGING_DIR_HOST)/bin/padjffs2 $@.new -J $(patsubst %k,,$(BLOCKSIZE))
 	-rm -rf $(KDIR_TMP)/$(DEVICE_NAME)/jffs2/
 	@mv $@.new $@
+endef
+
+define Build/kernel2minor
+	$(eval temp_file := $(shell mktemp))
+	cp $@ $(temp_file)
+	kernel2minor -k $(temp_file) -r $(temp_file).new $(1)
+	mv $(temp_file).new $@
+	rm -f $(temp_file)
 endef
 
 define Build/kernel-bin
@@ -413,7 +422,9 @@ define Build/append-metadata
 	}
 endef
 
-define Build/kernel2minor
-	kernel2minor -k $@ -r $@.new $(1)
-	mv $@.new $@
+# Convert a raw image into a $1 type image.
+# E.g. | qemu-image vdi <optional extra arguments to qemu-img binary>
+define Build/qemu-image
+	qemu-img convert -f raw -O $1 $@ $@.new
+	@mv $@.new $@
 endef

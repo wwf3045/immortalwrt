@@ -221,6 +221,25 @@ endef
 $(eval $(call KernelPackage,fb-tft-ili9486))
 
 
+define KernelPackage/multimedia-input
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=Multimedia input support
+  DEPENDS:=+kmod-input-core
+  KCONFIG:=CONFIG_RC_CORE \
+	CONFIG_LIRC=y \
+	CONFIG_RC_DECODERS=y \
+	CONFIG_RC_DEVICES=y
+  FILES:=$(LINUX_DIR)/drivers/media/rc/rc-core.ko
+  AUTOLOAD:=$(call AutoProbe,rc-core)
+endef
+
+define KernelPackage/multimedia-input/description
+  Enable multimedia input.
+endef
+
+$(eval $(call KernelPackage,multimedia-input))
+
+
 define KernelPackage/drm
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Direct Rendering Manager (DRM) support
@@ -861,6 +880,21 @@ define KernelPackage/video-gspca-sq905c/description
 endef
 
 $(eval $(call KernelPackage,video-gspca-sq905c))
+
+
+define KernelPackage/video-gspca-sq930x
+  TITLE:=sq930x webcam support
+  KCONFIG:=CONFIG_USB_GSPCA_SQ930X
+  FILES:=$(LINUX_DIR)/drivers/media/$(V4L2_USB_DIR)/gspca/gspca_sq930x.ko
+  AUTOLOAD:=$(call AutoProbe,gspca_sq930x)
+  $(call AddDepends/camera-gspca)
+endef
+
+define KernelPackage/video-gspca-sq930x/description
+ The SQ Technologies SQ930X based USB Camera Driver (sq930x) kernel module
+endef
+
+$(eval $(call KernelPackage,video-gspca-sq930x))
 
 
 define KernelPackage/video-gspca-stk014

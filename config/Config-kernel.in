@@ -625,7 +625,7 @@ endif
 
 config KERNEL_NAMESPACES
 	bool "Enable kernel namespaces"
-	default n
+	default y if !SMALL_FLASH
 
 if KERNEL_NAMESPACES
 
@@ -887,7 +887,7 @@ config KERNEL_SQUASHFS_XATTR
 	bool "Squashfs XATTR support"
 
 #
-# compile optimiziation setting
+# compile optimization setting
 #
 choice
 	prompt "Compiler optimization level"

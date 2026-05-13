@@ -1437,7 +1437,7 @@
  	/* Interface address info used in eth_type_trans() */
  	unsigned char		*dev_addr;
  
-@@ -3677,6 +3682,19 @@ static inline void netif_tx_unlock_bh(st
+@@ -3680,6 +3685,19 @@ static inline void netif_tx_unlock_bh(st
  	}						\
  }
  
@@ -1569,7 +1569,7 @@
  extern struct kmem_cache *skbuff_head_cache;
  
  void kfree_skb_partial(struct sk_buff *skb, bool head_stolen);
-@@ -3876,8 +3895,12 @@ static inline void __nf_copy(struct sk_b
+@@ -3885,8 +3904,12 @@ static inline void __nf_copy(struct sk_b
  	dst->_nfct = src->_nfct;
  	nf_conntrack_get(skb_nfct(src));
  #endif
@@ -1596,7 +1596,7 @@
 +void nf_unregister_queue_imq_handler(void);
 +#endif
  
- void nf_queue_entry_get_refs(struct nf_queue_entry *entry);
+ bool nf_queue_entry_get_refs(struct nf_queue_entry *entry);
  void nf_queue_entry_release_refs(struct nf_queue_entry *entry);
 --- a/include/net/pkt_sched.h
 +++ b/include/net/pkt_sched.h
@@ -1801,7 +1801,7 @@
  
  	/* Note : this field could be in headers_start/headers_end section
  	 * It is not yet because we do not want to have a 16 bit hole
-@@ -3970,6 +4077,13 @@ void __init skb_init(void)
+@@ -3973,6 +4080,13 @@ void __init skb_init(void)
  						0,
  						SLAB_HWCACHE_ALIGN|SLAB_PANIC,
  						NULL);
@@ -1817,7 +1817,7 @@
  static int
 --- a/net/netfilter/core.c
 +++ b/net/netfilter/core.c
-@@ -490,6 +490,11 @@ int nf_hook_slow(struct sk_buff *skb, st
+@@ -491,6 +491,11 @@ int nf_hook_slow(struct sk_buff *skb, st
  			if (ret == 0)
  				ret = -EPERM;
  			return ret;
@@ -1892,7 +1892,7 @@
  /* return EBUSY when somebody else is registered, return EEXIST if the
   * same handler is registered, return 0 in case of success. */
  void nf_register_queue_handler(struct net *net, const struct nf_queue_handler *qh)
-@@ -141,16 +158,29 @@ static void nf_ip6_saveroute(const struc
+@@ -154,16 +171,29 @@ static void nf_ip6_saveroute(const struc
  
  static int __nf_queue(struct sk_buff *skb, const struct nf_hook_state *state,
  		      const struct nf_hook_entries *entries,
@@ -1924,7 +1924,7 @@
  	if (!qh) {
  		status = -ESRCH;
  		goto err;
-@@ -218,8 +248,16 @@ int nf_queue(struct sk_buff *skb, struct
+@@ -235,8 +265,16 @@ int nf_queue(struct sk_buff *skb, struct
  {
  	int ret;
  
@@ -1942,7 +1942,7 @@
  		if (ret == -ESRCH &&
  		    (verdict & NF_VERDICT_FLAG_QUEUE_BYPASS))
  			return 1;
-@@ -323,6 +361,7 @@ next_hook:
+@@ -340,6 +378,7 @@ next_hook:
  		local_bh_enable();
  		break;
  	case NF_QUEUE:

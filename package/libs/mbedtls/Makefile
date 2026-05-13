@@ -8,15 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mbedtls
-PKG_VERSION:=2.16.10
-PKG_RELEASE:=1
+PKG_VERSION:=2.28.0
+PKG_RELEASE:=$(AUTORELEASE)
 PKG_USE_MIPS16:=0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/ARMmbed/mbedtls/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=96257bb03b30300b2f35f861ffe204ed957e9fd0329d80646fe57fc49f589b29
+PKG_HASH:=6519579b836ed78cc549375c7c18b111df5717e86ca0eeff4cb64b2674f424cc
 
-PKG_BUILD_PARALLEL:=1
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=gpl-2.0.txt
 PKG_CPE_ID:=cpe:/a:arm:mbed_tls
@@ -46,6 +45,7 @@ $(call Package/mbedtls/Default)
   CATEGORY:=Libraries
   SUBMENU:=SSL
   TITLE+= (library)
+  PKGFLAGS:=nonshared
   ABI_VERSION:=12
 endef
 
@@ -72,8 +72,6 @@ config LIBMBEDTLS_HAVE_ARMV8CE_AES
 	 Use of the ARMv8 Crypto Extensions greatly increase performance
 	 (up to 4x faster on AES-GCM while 10x faster on raw AES).
 
-	 Related instructions should be included in all modern Aarch64
-	 devices, except some wastes like Broadcom.
 	 If you don't sure, say Y here.
 
 config LIBMBEDTLS_HAVE_SSE2
@@ -118,8 +116,6 @@ This package contains mbedtls helper programs for private key and
 CSR generation (gen_key, cert_req)
 endef
 
-PKG_INSTALL:=1
-
 TARGET_CFLAGS += -ffunction-sections -fdata-sections
 TARGET_CFLAGS := $(filter-out -O%,$(TARGET_CFLAGS))
 ifneq ($(CONFIG_LIBMBEDTLS_HAVE_ARMV8CE_AES),)
@@ -149,6 +145,9 @@ define Build/Configure
 	     END { exit(rc) }' $(PKG_BUILD_DIR)/include/mbedtls/config.h \
 	     >$(PKG_BUILD_DIR)/include/mbedtls/config.h.new && \
 	mv $(PKG_BUILD_DIR)/include/mbedtls/config.h.new $(PKG_BUILD_DIR)/include/mbedtls/config.h
+
+	sed -i '/fuzz/d' $(PKG_BUILD_DIR)/programs/CMakeLists.txt
+	sed -i '/test/d' $(PKG_BUILD_DIR)/programs/CMakeLists.txt
 endef
 
 define Build/InstallDev

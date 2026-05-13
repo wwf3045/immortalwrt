@@ -27,11 +27,25 @@
 		serial0 = &gsbi4_serial;
 		mdio-gpio0 = &mdio0;
 		sdcc1 = &sdcc1;
+
+		led-boot = &led_sys;
+		led-failsafe = &led_sys;
+		led-running = &led_sys;
+		led-upgrade = &led_sys;
 	};
 
 	chosen {
 		bootargs = "root=/dev/mmcblk0p3 rootfstype=squashfs,ext4 rootwait noinitrd";
 		stdout-path = "serial0:115200n8";
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_sys: sys {
+			label = "m520:green:sys";
+			gpios = <&gpio_ext 15 GPIO_ACTIVE_LOW>;
+		};
 	};
 
 	soc {
@@ -51,15 +65,6 @@
 					function = "gsbi4";
 					drive-strength = <12>;
 					bias-disable;
-				};
-			};
-
-			led_pins: led_pins {
-				mux {
-					pins = "gpio7", "gpio8", "gpio9", "gpio53";
-					function = "gpio";
-					drive-strength = <2>;
-					bias-pull-down;
 				};
 			};
 
@@ -132,6 +137,15 @@
 					drive-strength = <12>;
 				};
 			};
+
+			wdt0_pins: wdt0_pins {
+				mux {
+					pins = "gpio17";
+					function = "gpio";
+					drive-strength = <2>;
+					bias-pull-down;
+				};
+			};
 		};
 
 		gsbi2: gsbi@12480000 {
@@ -142,21 +156,21 @@
 				status = "ok";
 
 				lm75@48 {
-					status = "okay";
 					compatible = "lm75";
 					reg = <0x48>;
 				};
 
 				pcf8563: rtc@51 {
-					status = "okay";
 					compatible = "nxp,pcf8563";
 					reg = <0x51>;
 				};
 
-				tca9539@74 {
-					status = "okay";
+				gpio_ext: tca9539@74 {
 					compatible = "ti,tca9539";
 					reg = <0x74>;
+
+					gpio-controller;
+					#gpio-cells = <2>;
 				};
 			};
 		};
@@ -351,8 +365,6 @@
 			pinctrl-0 = <&rgmii2_pins>;
 			pinctrl-names = "default";
 
-			mtd-mac-address-ascii = <&PRODUCTINFO 0x86a>;
-
 			fixed-link {
 				speed = <1000>;
 				full-duplex;
@@ -364,10 +376,6 @@
 			phy-mode = "sgmii";
 			qcom,id = <2>;
 
-			mtd-mac-address-ascii = <&PRODUCTINFO 0x86a>;
-			mtd-mac-address-increment = <1>;
-			mtd-mac-address-increment-byte = <0>;
-
 			fixed-link {
 				speed = <1000>;
 				full-duplex;
@@ -377,9 +385,19 @@
 		amba {
 			sdcc1: sdcc@12400000 {
 				status = "okay";
-			    pinctrl-0 = <&sdcc1_pins>;
-			    pinctrl-names = "default";
+				pinctrl-0 = <&sdcc1_pins>;
+				pinctrl-names = "default";
 			};
+		};
+
+		watchdog {
+			compatible = "linux,wdt-gpio";
+			pinctrl-0 = <&wdt0_pins>;
+			pinctrl-names = "default";
+			gpios = <&qcom_pinmux 17 GPIO_ACTIVE_LOW>;
+			hw_algo = "toggle";
+			hw_margin_ms = <500>;
+			always-running;
 		};
 	};
 

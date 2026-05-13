@@ -71,7 +71,6 @@ define KernelPackage/fs-btrfs
   DEPENDS:=+kmod-lib-crc32c +kmod-lib-lzo +kmod-lib-zlib-inflate +kmod-lib-zlib-deflate +kmod-lib-raid6 +kmod-lib-xor +!LINUX_4_9:kmod-lib-zstd
   KCONFIG:=\
 	CONFIG_BTRFS_FS \
-	CONFIG_BTRFS_FS_POSIX_ACL=n \
 	CONFIG_BTRFS_FS_CHECK_INTEGRITY=n
   FILES:=\
 	$(LINUX_DIR)/fs/btrfs/btrfs.ko
@@ -479,6 +478,26 @@ define KernelPackage/fs-ntfs/description
 endef
 
 $(eval $(call KernelPackage,fs-ntfs))
+
+
+define KernelPackage/fs-ntfs3
+  SUBMENU:=$(FS_MENU)
+  TITLE:=NTFS3 Read-Write file system support
+  DEPENDS:=@LINUX_4_19 +kmod-nls-base
+  KCONFIG:= \
+	CONFIG_NTFS3_FS \
+	CONFIG_NTFS3_64BIT_CLUSTER=y \
+	CONFIG_NTFS3_LZX_XPRESS=y \
+	CONFIG_NTFS3_FS_POSIX_ACL=y
+  FILES:=$(LINUX_DIR)/fs/ntfs3/ntfs3.ko
+  AUTOLOAD:=$(call AutoLoad,30,ntfs3)
+endef
+
+define KernelPackage/fs-ntfs3/description
+ Kernel module for NTFS3 filesystem support
+endef
+
+$(eval $(call KernelPackage,fs-ntfs3))
 
 
 define KernelPackage/fs-reiserfs

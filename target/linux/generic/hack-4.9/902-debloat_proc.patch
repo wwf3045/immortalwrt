@@ -155,7 +155,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  				IPC_SEM_IDS, sysvipc_sem_proc_show);
 --- a/ipc/shm.c
 +++ b/ipc/shm.c
-@@ -118,6 +118,8 @@ pure_initcall(ipc_ns_init);
+@@ -119,6 +119,8 @@ pure_initcall(ipc_ns_init);
  
  void __init shm_init(void)
  {
@@ -244,7 +244,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  }
 --- a/mm/vmstat.c
 +++ b/mm/vmstat.c
-@@ -1793,10 +1793,12 @@ static int __init setup_vmstat(void)
+@@ -1796,10 +1796,12 @@ static int __init setup_vmstat(void)
  	cpu_notifier_register_done();
  #endif
  #ifdef CONFIG_PROC_FS
@@ -284,7 +284,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  		goto err;
 --- a/net/core/net-procfs.c
 +++ b/net/core/net-procfs.c
-@@ -319,10 +319,12 @@ static int __net_init dev_proc_net_init(
+@@ -349,10 +349,12 @@ static int __net_init dev_proc_net_init(
  
  	if (!proc_create("dev", S_IRUGO, net->proc_net, &dev_seq_fops))
  		goto out;
@@ -299,7 +299,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  		goto out_softnet;
  
  	if (wext_proc_init(net))
-@@ -331,9 +333,11 @@ static int __net_init dev_proc_net_init(
+@@ -361,9 +363,11 @@ static int __net_init dev_proc_net_init(
  out:
  	return rc;
  out_ptype:
@@ -313,7 +313,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  out_dev:
  	remove_proc_entry("dev", net->proc_net);
  	goto out;
-@@ -343,8 +347,10 @@ static void __net_exit dev_proc_net_exit
+@@ -373,8 +377,10 @@ static void __net_exit dev_proc_net_exit
  {
  	wext_proc_exit(net);
  
@@ -328,7 +328,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
 --- a/net/core/sock.c
 +++ b/net/core/sock.c
-@@ -3120,6 +3120,8 @@ static __net_initdata struct pernet_oper
+@@ -3126,6 +3126,8 @@ static __net_initdata struct pernet_oper
  
  static int __init proto_init(void)
  {
@@ -394,7 +394,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
 --- a/net/ipv4/route.c
 +++ b/net/ipv4/route.c
-@@ -422,6 +422,9 @@ static struct pernet_operations ip_rt_pr
+@@ -423,6 +423,9 @@ static struct pernet_operations ip_rt_pr
  
  static int __init ip_rt_proc_init(void)
  {

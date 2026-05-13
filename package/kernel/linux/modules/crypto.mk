@@ -93,6 +93,18 @@ endef
 $(eval $(call KernelPackage,crypto-ccm))
 
 
+define KernelPackage/crypto-chacha20poly1305
+  TITLE:=ChaCha20-Poly1305 AEAD support, RFC7539 (used by strongSwan IPsec VPN)
+  DEPENDS:=+kmod-crypto-aead +kmod-crypto-manager
+  KCONFIG:=CONFIG_CRYPTO_CHACHA20POLY1305
+  FILES:=$(LINUX_DIR)/crypto/chacha20poly1305.ko
+  AUTOLOAD:=$(call AutoLoad,09,chacha20poly1305)
+  $(call AddDepends/crypto)
+endef
+
+$(eval $(call KernelPackage,crypto-chacha20poly1305))
+
+
 define KernelPackage/crypto-cmac
   TITLE:=Support for Cipher-based Message Authentication Code (CMAC)
   DEPENDS:=+kmod-crypto-hash
@@ -277,7 +289,7 @@ endef
 
 KernelPackage/crypto-ghash/imx6=$(KernelPackage/crypto-ghash/arm-ce)
 KernelPackage/crypto-ghash/ipq40xx=$(KernelPackage/crypto-ghash/arm-ce)
-KernelPackage/crypto-ghash/mvebu=$(KernelPackage/crypto-ghash/arm-ce)
+KernelPackage/crypto-ghash/mvebu/cortexa9=$(KernelPackage/crypto-ghash/arm-ce)
 
 $(eval $(call KernelPackage,crypto-ghash))
 
@@ -348,7 +360,7 @@ $(eval $(call KernelPackage,crypto-hw-geode))
 
 define KernelPackage/crypto-hw-hifn-795x
   TITLE:=HIFN 795x crypto accelerator
-  DEPENDS:=+kmod-random-core +kmod-crypto-manager
+  DEPENDS:=@PCI_SUPPORT +kmod-random-core +kmod-crypto-manager
   KCONFIG:= \
 	CONFIG_CRYPTO_HW=y \
 	CONFIG_CRYPTO_DEV_HIFN_795X \

@@ -9,7 +9,7 @@ define Device/Default
 	PROFILES := Default
 	KERNEL_DEPENDS = $$(wildcard $(DTS_DIR)/$$(DEVICE_DTS).dts)
 	KERNEL_INITRAMFS_PREFIX := $$(IMG_PREFIX)-$(1)-initramfs
-	KERNEL_PREFIX := $$(IMAGE_PREFIX)
+	KERNEL_PREFIX := $$(DEVICE_IMG_PREFIX)
 	KERNEL_LOADADDR := 0x80208000
 	IMAGES := sysupgrade.bin
 	IMAGE/sysupgrade.bin = sysupgrade-tar | append-metadata
@@ -134,8 +134,7 @@ define Device/alfa-network_ap120c-ac
 	DEVICE_VENDOR := ALFA Network
 	DEVICE_MODEL := AP120C-AC
 	DEVICE_DTS := qcom-ipq4018-ap120c-ac
-	DEVICE_PACKAGES := kmod-usb-acm \
-		kmod-tpm-i2c-atmel uboot-envtools
+	DEVICE_PACKAGES := kmod-usb-acm kmod-tpm-i2c-atmel
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
 	IMAGE_SIZE := 65536k
@@ -199,8 +198,8 @@ define Device/asus_rt-ac58u
 	UIMAGE_NAME:=$(shell echo -e '\03\01\01\01RT-AC58U')
 	KERNEL_INITRAMFS := $$(KERNEL) | uImage none
 	KERNEL_INITRAMFS_SUFFIX := -factory.trx
-	DEVICE_PACKAGES := -kmod-ath10k -ath10k-firmware-qca4019 \
-	kmod-ath10k-ct-smallbuffers ath10k-firmware-qca4019-ct kmod-usb-ledtrig-usbport
+	DEVICE_PACKAGES := -ath10k-firmware-qca4019 ath10k-firmware-qca4019-ct \
+		-kmod-ath10k kmod-ath10k-ct-smallbuffers kmod-usb-ledtrig-usbport
 endef
 TARGET_DEVICES += asus_rt-ac58u
 
@@ -270,7 +269,7 @@ define Device/buffalo_wtr-m2133hp
 	DEVICE_VENDOR := Buffalo
 	DEVICE_MODEL := WTR-M2133HP
 	DEVICE_DTS := qcom-ipq4019-wtr-m2133hp
-	DEVICE_PACKAGES := uboot-envtools ath10k-firmware-qca9984 ipq-wifi-buffalo_wtr-m2133hp
+	DEVICE_PACKAGES := ath10k-firmware-qca9984 ipq-wifi-buffalo_wtr-m2133hp
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
 endef
@@ -413,7 +412,8 @@ define Device/engenius_eap2200
 	DEVICE_DTS := qcom-ipq4019-eap2200
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
-	DEVICE_PACKAGES := ath10k-firmware-qca9888 ipq-wifi-engenius_eap2200 -kmod-ath10k-ct kmod-ath10k-ct-smallbuffers
+	DEVICE_PACKAGES := -ath10k-firmware-qca4019 ath10k-firmware-qca4019-ct -kmod-ath10k \
+		ath10k-firmware-qca9888 ipq-wifi-engenius_eap2200 kmod-ath10k-ct-smallbuffers
 endef
 TARGET_DEVICES += engenius_eap2200
 
@@ -427,6 +427,7 @@ define Device/engenius_emd1
 	IMAGES += factory.bin
 	IMAGE/sysupgrade.bin := append-kernel | append-rootfs | pad-rootfs | append-metadata
 	IMAGE/factory.bin := qsdk-ipq-factory-nor | check-size
+	DEVICE_PACKAGES := ipq-wifi-engenius_emd1
 endef
 TARGET_DEVICES += engenius_emd1
 
@@ -441,6 +442,7 @@ define Device/engenius_emr3500
 	IMAGES += factory.bin
 	IMAGE/sysupgrade.bin := append-kernel | append-rootfs | pad-rootfs | append-metadata
 	IMAGE/factory.bin := qsdk-ipq-factory-nor | check-size
+	DEVICE_PACKAGES := ipq-wifi-engenius_emr3500
 endef
 TARGET_DEVICES += engenius_emr3500
 
@@ -480,8 +482,8 @@ define Device/ezviz_cs-w3-wd1200g-eup
 	DEVICE_DTS := qcom-ipq4018-cs-w3-wd1200g-eup
 	IMAGE/sysupgrade.bin := append-kernel | append-rootfs | pad-rootfs | \
 		append-metadata
-	DEVICE_PACKAGES := -kmod-ath10k-ct kmod-ath10k-ct-smallbuffers \
-		ipq-wifi-ezviz_cs-w3-wd1200g-eup
+	DEVICE_PACKAGES := -ath10k-firmware-qca4019 ath10k-firmware-qca4019-ct \
+	-kmod-ath10k kmod-ath10k-ct-smallbuffers ipq-wifi-ezviz_cs-w3-wd1200g-eup
 endef
 TARGET_DEVICES += ezviz_cs-w3-wd1200g-eup
 
@@ -491,7 +493,6 @@ define Device/glinet_gl-b1300
 	DEVICE_MODEL := GL-B1300
 	BOARD_NAME := gl-b1300
 	DEVICE_DTS := qcom-ipq4029-gl-b1300
-	BOARD_NAME := gl-b1300
 	KERNEL_SIZE := 4096k
 	IMAGE_SIZE := 26624k
 	IMAGE/sysupgrade.bin := append-kernel |append-rootfs | pad-rootfs | append-metadata
@@ -529,18 +530,17 @@ define Device/hiwifi_c526a-128m
 endef
 TARGET_DEVICES += hiwifi_c526a-128m
 
-define Device/hugo_ac1200
+define Device/leguang_ca100
 	$(call Device/FitImage)
-	DEVICE_VENDOR := Hugo
-	DEVICE_MODEL := AC1200
-	BOARD_NAME := hugo_ac1200
-	DEVICE_DTS := qcom-ipq4019-hugo-ac1200
+	DEVICE_VENDOR := LEGUANG
+	DEVICE_MODEL := CA100
+	DEVICE_DTS := qcom-ipq4019-ca100
 	KERNEL_SIZE := 4096k
 	IMAGE_SIZE := 31232k
 	IMAGE/sysupgrade.bin := append-kernel | append-rootfs | pad-rootfs | append-metadata
-	DEVICE_PACKAGES := ipq-wifi-hugo_ac1200
+	DEVICE_PACKAGES := ipq-wifi-leguang_ca100
 endef
-TARGET_DEVICES += hugo_ac1200
+TARGET_DEVICES += leguang_ca100
 
 define Device/linksys_ea6350v3
 	# The Linksys EA6350v3 has a uboot bootloader that does not
@@ -575,7 +575,6 @@ define Device/linksys_ea6350v3
 	UBINIZE_OPTS := -E 5
 	IMAGES += factory.bin
 	IMAGE/factory.bin := append-kernel | append-uImage-fakehdr filesystem | pad-to $$$$(KERNEL_SIZE) | append-ubi | linksys-image type=EA6350v3
-	DEVICE_PACKAGES := uboot-envtools
 endef
 TARGET_DEVICES += linksys_ea6350v3
 
@@ -591,7 +590,7 @@ define Device/linksys_ea8300
 	UBINIZE_OPTS := -E 5    # EOD marks to "hide" factory sig at EOF
 	IMAGES += factory.bin
 	IMAGE/factory.bin  := append-kernel | pad-to $$$$(KERNEL_SIZE) | append-ubi | linksys-image type=EA8300
-	DEVICE_PACKAGES := uboot-envtools ath10k-firmware-qca9888 ipq-wifi-linksys_ea8300 kmod-usb-ledtrig-usbport
+	DEVICE_PACKAGES := ath10k-firmware-qca9888 ipq-wifi-linksys_ea8300 kmod-usb-ledtrig-usbport
 endef
 TARGET_DEVICES += linksys_ea8300
 
@@ -668,7 +667,6 @@ define Device/openmesh_a42
 	IMAGES += factory.bin
 	IMAGE/factory.bin := append-rootfs | pad-rootfs | openmesh-image ce_type=A42
 	IMAGE/sysupgrade.bin/squashfs := append-rootfs | pad-rootfs | sysupgrade-tar rootfs=$$$$@ | append-metadata
-	DEVICE_PACKAGES := uboot-envtools
 endef
 TARGET_DEVICES += openmesh_a42
 
@@ -684,7 +682,7 @@ define Device/openmesh_a62
 	IMAGES += factory.bin
 	IMAGE/factory.bin := append-rootfs | pad-rootfs | openmesh-image ce_type=A62
 	IMAGE/sysupgrade.bin/squashfs := append-rootfs | pad-rootfs | sysupgrade-tar rootfs=$$$$@ | append-metadata
-	DEVICE_PACKAGES := ath10k-firmware-qca9888 uboot-envtools
+	DEVICE_PACKAGES := ath10k-firmware-qca9888
 endef
 TARGET_DEVICES += openmesh_a62
 
@@ -789,7 +787,7 @@ define Device/zyxel_nbg6617
 #	this minimum-size. However, the larger image can be flashed both ways.
 	IMAGE/factory.bin := append-rootfs | pad-rootfs | pad-to 64k | check-size $$$$(ROOTFS_SIZE) | zyxel-ras-image separate-kernel
 	IMAGE/sysupgrade.bin/squashfs := append-rootfs | pad-rootfs | check-size $$$$(ROOTFS_SIZE) | sysupgrade-tar rootfs=$$$$@ | append-metadata
-	DEVICE_PACKAGES := uboot-envtools kmod-usb-ledtrig-usbport
+	DEVICE_PACKAGES := kmod-usb-ledtrig-usbport
 endef
 TARGET_DEVICES += zyxel_nbg6617
 
@@ -801,8 +799,8 @@ define Device/zyxel_wre6606
 	DEVICE_DTS_CONFIG := config@4
 	IMAGE_SIZE := 13184k
 	IMAGE/sysupgrade.bin := append-kernel | append-rootfs | pad-rootfs | append-metadata
-	DEVICE_PACKAGES := -kmod-ath10k -ath10k-firmware-qca4019 \
-	kmod-ath10k-ct-smallbuffers ath10k-firmware-qca4019-ct
+	DEVICE_PACKAGES := -ath10k-firmware-qca4019 ath10k-firmware-qca4019-ct \
+		-kmod-ath10k kmod-ath10k-ct-smallbuffers
 endef
 TARGET_DEVICES += zyxel_wre6606
 

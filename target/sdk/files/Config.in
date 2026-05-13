@@ -102,7 +102,7 @@ menu "Advanced configuration options (for developers)"
 
 	config CCACHE
 		bool "Use ccache"
-		default y
+		default n
 		help
 		  Compiler cache; see https://ccache.samba.org/
 
@@ -130,7 +130,7 @@ config IN_SDK
 config MODULES
 	bool
 	default y
-	option modules
+	modules
 
 source "Config-build.in"
 source "tmp/.config-package.in"

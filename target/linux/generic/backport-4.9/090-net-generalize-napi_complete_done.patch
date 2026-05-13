@@ -388,7 +388,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  					BNX2_PCICFG_INT_ACK_CMD_INDEX_VALID |
 --- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
 +++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-@@ -3240,7 +3240,7 @@ static int bnx2x_poll(struct napi_struct
+@@ -3241,7 +3241,7 @@ static int bnx2x_poll(struct napi_struct
  		 * has been updated when NAPI was scheduled.
  		 */
  		if (IS_FCOE_FP(fp)) {
@@ -637,7 +637,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		return received;
 --- a/drivers/net/ethernet/freescale/gianfar.c
 +++ b/drivers/net/ethernet/freescale/gianfar.c
-@@ -3199,7 +3199,7 @@ static int gfar_poll_rx_sq(struct napi_s
+@@ -3205,7 +3205,7 @@ static int gfar_poll_rx_sq(struct napi_s
  
  	if (work_done < budget) {
  		u32 imask;
@@ -646,7 +646,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		/* Clear the halt bit in RSTAT */
  		gfar_write(&regs->rstat, gfargrp->rstat);
  
-@@ -3288,7 +3288,7 @@ static int gfar_poll_rx(struct napi_stru
+@@ -3294,7 +3294,7 @@ static int gfar_poll_rx(struct napi_stru
  
  	if (!num_act_queues) {
  		u32 imask;
@@ -863,7 +863,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  	return work_done;
 --- a/drivers/net/ethernet/natsemi/natsemi.c
 +++ b/drivers/net/ethernet/natsemi/natsemi.c
-@@ -2261,7 +2261,7 @@ static int natsemi_poll(struct napi_stru
+@@ -2258,7 +2258,7 @@ static int natsemi_poll(struct napi_stru
  		np->intr_status = readl(ioaddr + IntrStatus);
  	} while (np->intr_status);
  
@@ -938,7 +938,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  
 --- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
 +++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-@@ -2391,7 +2391,7 @@ static int pch_gbe_napi_poll(struct napi
+@@ -2384,7 +2384,7 @@ static int pch_gbe_napi_poll(struct napi
  		poll_end_flag = true;
  
  	if (poll_end_flag) {
@@ -960,7 +960,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		pasemi_mac_restart_tx_intr(mac);
 --- a/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
 +++ b/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
-@@ -2386,7 +2386,7 @@ static int netxen_nic_poll(struct napi_s
+@@ -2388,7 +2388,7 @@ static int netxen_nic_poll(struct napi_s
  		work_done = budget;
  
  	if (work_done < budget) {
@@ -1161,7 +1161,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  			cpsw->rx_irq_disabled = false;
 --- a/drivers/net/ethernet/ti/davinci_emac.c
 +++ b/drivers/net/ethernet/ti/davinci_emac.c
-@@ -1295,7 +1295,7 @@ static int emac_poll(struct napi_struct
+@@ -1307,7 +1307,7 @@ static int emac_poll(struct napi_struct
  					&emac_rxhost_errcodes[cause][0], ch);
  		}
  	} else if (num_rx_pkts < budget) {
@@ -1304,7 +1304,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  			adapter->rx_last_jiffies = jiffies;
 --- a/drivers/net/vmxnet3/vmxnet3_drv.c
 +++ b/drivers/net/vmxnet3/vmxnet3_drv.c
-@@ -1873,7 +1873,7 @@ vmxnet3_poll(struct napi_struct *napi, i
+@@ -1879,7 +1879,7 @@ vmxnet3_poll(struct napi_struct *napi, i
  	rxd_done = vmxnet3_do_poll(rx_queue->adapter, budget);
  
  	if (rxd_done < budget) {
@@ -1313,7 +1313,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		vmxnet3_enable_all_intrs(rx_queue->adapter);
  	}
  	return rxd_done;
-@@ -1904,7 +1904,7 @@ vmxnet3_poll_rx_only(struct napi_struct
+@@ -1910,7 +1910,7 @@ vmxnet3_poll_rx_only(struct napi_struct
  	rxd_done = vmxnet3_rq_rx_complete(rq, adapter, budget);
  
  	if (rxd_done < budget) {
@@ -1379,7 +1379,7 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  		 */
 --- a/drivers/net/xen-netfront.c
 +++ b/drivers/net/xen-netfront.c
-@@ -1073,7 +1073,7 @@ err:
+@@ -1138,7 +1138,7 @@ err:
  	if (work_done < budget) {
  		int more_to_do = 0;
  
